@@ -1,3 +1,4 @@
-from myConfig import MyRequestConfig
+from myRequestUtil import MyRequestConfig
+from .. import job_cfg
 
-myRequestConfig = MyRequestConfig('job-request.json')
+request = MyRequestConfig(job_cfg.requests_cfg_filename, job_cfg.servers_cfg_filename)

@@ -1,11 +1,11 @@
-from . import myRequestConfig
+from . import request
 
 
-def jobComRequest(apiCall: str):
+def job_com_request(api_call: str):
     """
-    默认爬取。
+    通用发起请求方法。
     """
-    apiCalls = apiCall.split(':')
-    apiName = apiCalls[0]
-    apiMethodName = apiCalls[1]
-    return myRequestConfig.request(apiName=apiName, apiMethodName=apiMethodName)
+    api_calls = api_call.split(':')
+    api_name = api_calls[0]
+    api_method_name = api_calls[1]
+    return request.request(api_name=api_name, api_method_name=api_method_name)

@@ -1,29 +1,41 @@
+from fastapi import FastAPI
+from myConfig import MyConfig
 from myLogger import MyLogger
-from fastapi import FastAPI, Header, Depends, HTTPException, status
-from pydantic import BaseModel
-from typing import Optional
-import traceback
-import myConfig as mc
-from .apis import schedulerAPI
+from .services.jobCfg import JobCfg
 
+# ---------------------------------------------------------------------------
+# 加载job的配置文件
+# ---------------------------------------------------------------------------
+#
+try:
+    default_config = MyConfig().config
+    if 'job' in default_config:
+        default_filename = default_config['job']
+    else:
+        default_filename = 'job.json'
+except ValueError:
+    default_filename = 'job.json'
+
+job_cfg = JobCfg(default_filename)
+
+# ---------------------------------------------------------------------------
+# 初始化job的全局日志
+# ---------------------------------------------------------------------------
+#
+log = MyLogger()
+log.initLogger(job_cfg.log_filename)
+
+# ---------------------------------------------------------------------------
+# 初始化app
+# ---------------------------------------------------------------------------
+#
+log.debug('------------Initiate app...------------')
 app = FastAPI()
 
-job_config_filename = 'job.json'
-job_log_key = 'log-file'
-
-jobCfg = mc.MyConfig(job_config_filename).config
-
-log = MyLogger()
-log.initLogger(fileName=jobCfg[job_log_key])
-
-
-def initLog(logFileName: str = job_log_key):
-    """
-
-    """
-    jobLog = MyLogger()
-    jobLogFile = jobCfg[job_log_key]
-    if logFileName in jobCfg:
-        jobLogFile = jobCfg[logFileName]
-    jobLog.initLogger(fileName=jobLogFile)
-    return jobLog
+# ---------------------------------------------------------------------------
+# 加载job相关api
+# ---------------------------------------------------------------------------
+#
+from .apis.jobAPI import JobAPI
+job_api = JobAPI()
+job_api.setup_routes(app)

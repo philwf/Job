@@ -1,19 +1,19 @@
-from . import jobComRequest, log
+from . import job_com_request, log
+from myComUtil import FontColor, formatSeconds
 import datetime
-import myComUtil as cu
 
 
-def startJobByAPI(apiCallStr: str):
+def start_job_by_api(api_call_str: str):
     """
 
     """
     # 开始时间
-    tStart = datetime.datetime.now()
-    log.info(f'JobByAPI==>{cu.FontColor(apiCallStr).green} start: {tStart}')
+    t_start = datetime.datetime.now()
+    log.info(f'JobByAPI==>{FontColor(api_call_str).green} start: {t_start}')
 
-    jobComRequest(apiCallStr)
+    job_com_request(api_call_str)
 
     # 结束时间
-    tEnd = datetime.datetime.now()
-    tSpend = tEnd - tStart
-    log.info(f'JobByAPI==>{cu.FontColor(apiCallStr).red} end: {tEnd}, spend：{cu.formatSeconds(tSpend.seconds)}')
+    t_end = datetime.datetime.now()
+    t_spend = t_end - t_start
+    log.info(f'JobByAPI==>{FontColor(api_call_str).red} end: {t_end}, spend：{formatSeconds(t_spend.seconds)}')

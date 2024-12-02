@@ -1,3 +1,6 @@
+import re
+
+
 # ---------------------------------------------------------------------------
 # 定时任务配置字符串解析
 # ---------------------------------------------------------------------------
@@ -44,61 +47,76 @@ class CronFiled(object):
     ————————————————
     """
 
-    def __init__(self, cronStr):
+    def __init__(self, cron_str):
         """
 
         """
-        self.cronStr = cronStr
+        self.cronStr = cron_str
         self.cron = {}
-        self._getCronFiled()
-        self._getCronDesc()
+        self._get_cron_filed()
+        self._get_cron_desc()
 
-    def _getCronFiled(self):
+    def _get_cron_filed(self):
         """
         格式: "秒 分 时 日 月 周 年"  or "秒 分 时 日 月 周"
         """
-        cronList = self.cronStr.split(' ')
-        cronLen = len(cronList)
+        cron_list = self.cronStr.split(' ')
+        cron_len = len(cron_list)
 
-        if cronLen not in [6, 7]:
-            raise ValueError('Wrong number of fields; got {}, expected 6 or 7'.format(cronLen))
+        if cron_len not in [6, 7]:
+            raise ValueError('Wrong number of fields; got {}, expected 6 or 7'.format(cron_len))
 
         self.cron['timezone'] = 'Asia/Shanghai'
-        self.cron['second'] = cronList[0]
-        self.cron['minute'] = cronList[1]
-        self.cron['hour'] = cronList[2]
-        self.cron['day'] = cronList[3]
-        self.cron['month'] = cronList[4]
-        self.cron['day_of_week'] = cronList[5]
-        if cronLen == 7:
-            self.cron['year'] = cronList[6]
+        self.cron['second'] = cron_list[0]
+        self.cron['minute'] = cron_list[1]
+        self.cron['hour'] = cron_list[2]
+        self.cron['day'] = cron_list[3]
+        self.cron['month'] = cron_list[4]
+        self.cron['day_of_week'] = cron_list[5]
+        if cron_len == 7:
+            self.cron['year'] = cron_list[6]
         else:
             self.cron['year'] = '*'
 
-    def _getCronDesc(self):
+    def _get_cron_desc(self):
         """
 
         """
-        keyDesc = {'year': '年', 'day_of_week': '周', 'month': '月',
+        key_desc = {'year': '年', 'day_of_week': '周', 'month': '月',
                    'day': '日', 'hour': '小时', 'minute': '分钟', 'second': '秒'}
-        weekDesc = {'0': '周日', '1': '周一', '2': '周二', '3': '周三', '4': '周四', '5': '周五', '6': '周六'}
+        week_desc = {'0': '周日', '1': '周一', '2': '周二', '3': '周三', '4': '周四', '5': '周五', '6': '周六'}
 
         self.cronDesc = ''
-        for key in keyDesc:
-            cronValue = self.cron[key]
-            descSuffix = keyDesc[key]
-            if cronValue in ['*', '?']:
+        for key in key_desc:
+            cron_value = self.cron[key]
+            desc_suffix = key_desc[key]
+            if cron_value in ['*', '?']:
                 continue
 
             desc = ''
-            for i in cronValue.split(','):
+            for i in cron_value.split(','):
                 if '-' in i:
-                    s = f'从第{i.split("-")[0]}{descSuffix}到第{i.split("-")[1]}{descSuffix}之间'
+                    s = f'从第{i.split("-")[0]}{desc_suffix}到第{i.split("-")[1]}{desc_suffix}之间'
                 elif '/' in i:
-                    s = f'{i.split("/")[0]}{descSuffix}/每间隔{i.split("/")[1]}{descSuffix}'
+                    s = f'{i.split("/")[0]}{desc_suffix}/每间隔{i.split("/")[1]}{desc_suffix}'
                 else:
-                    s = f'{i}{descSuffix}'
+                    s = f'{i}{desc_suffix}'
 
                 desc = desc + s
 
             self.cronDesc = self.cronDesc + desc
+
+class TiggerCronStr(object):
+    """
+
+    """
+    def __init__(self, cron_str):
+        # 使用正则表达式提取字段值
+        matches = re.findall(r"(year|month|day|day_of_week|hour|minute|second)='(.*?)'", cron_str)
+
+        # 定义字段的顺序
+        field_order = ["second", "minute", "hour", "day", "month", "day_of_week", "year"]
+
+        # 根据字段顺序重组字符串
+        cron_parts = {key: value for key, value in matches}
+        self.fmt_cron_str = " ".join(cron_parts.get(field, "*") for field in field_order)
