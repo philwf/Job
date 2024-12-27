@@ -94,6 +94,8 @@ class JobAPI(BasicApi):
             self.scheduler_mgt.pause_jobs(opt_jobs['job_ids'])
         elif opt_jobs["opt_type"] == JOB_OPT_TYPE.RESUME:
             self.scheduler_mgt.resume_jobs(opt_jobs['job_ids'])
+        elif opt_jobs["opt_type"] == JOB_OPT_TYPE.START_NOW:
+            self.scheduler_mgt.start_jobs(opt_jobs['job_ids'])
         else:
             raise ValueError(f'undefined opt_type: {opt_jobs["opt_type"]}')
         result = {'result': 'ok', 'data': 'ok'}

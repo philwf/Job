@@ -1,8 +1,8 @@
-import traceback
-
 from apscheduler.schedulers.background import BackgroundScheduler, BlockingScheduler
 from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler.job import Job
+
+from datetime import datetime
 
 from .jobCfg import SchedulerCfg, JobTriggerType
 from .cronFiled import CronFiled, TiggerCronStr
@@ -169,6 +169,18 @@ class SchedulerMgt(object):
         self.log.info(FontColor(f'添加定时任务, name={name}, cron={cron_str}').green)
         self.scheduler.add_job(id=name, name=desc, func=func, jobstore=self.JOB_STORE, replace_existing=True,
                                trigger='cron', kwargs=para, **cron_dict)
+
+    def start_jobs(self, job_ids: list):
+        """
+
+        :param job_ids:
+        :return:
+        """
+        for job_id in job_ids:
+            self.log.info(FontColor(f'立即执行定时任务, name={job_id}').green)
+
+            # 立即执行任务
+            self.scheduler.modify_job(job_id=job_id, jobstore=self.JOB_STORE, next_run_time=datetime.now())
 
     def remove_jobs(self, job_ids: list):
         """

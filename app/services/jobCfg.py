@@ -47,6 +47,7 @@ class JobOptType(object):
         self.REMOVE = "remove"
         self.RESUME = "resume"
         self.PAUSE = "pause"
+        self.START_NOW = "start-now"
 
 
 # ---------------------------------------------------------------------------
