@@ -3,7 +3,7 @@ from myComUtil import FontColor, formatSeconds
 import datetime
 
 
-def start_job_by_api(api_call_str: str):
+def start_job_by_api(api_call_str: str, api_para: dict=None):
     """
 
     """
@@ -11,7 +11,7 @@ def start_job_by_api(api_call_str: str):
     t_start = datetime.datetime.now()
     log.info(f'JobByAPI==>{FontColor(api_call_str).green} start: {t_start}')
 
-    job_com_request(api_call_str)
+    job_com_request(api_call_str, api_para)
 
     # 结束时间
     t_end = datetime.datetime.now()
