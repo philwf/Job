@@ -66,7 +66,7 @@ class CronFiled(object):
         if cron_len not in [6, 7]:
             raise ValueError('Wrong number of fields; got {}, expected 6 or 7'.format(cron_len))
 
-        self.cron['timezone'] = 'Asia/Shanghai'
+        # self.cron['timezone'] = 'Asia/Dubai'
         self.cron['second'] = cron_list[0]
         self.cron['minute'] = cron_list[1]
         self.cron['hour'] = cron_list[2]

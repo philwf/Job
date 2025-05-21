@@ -1,5 +1,4 @@
 from myConfig import MyConfig
-from .cronFiled import CronFiled
 
 
 # ---------------------------------------------------------------------------
@@ -91,3 +90,4 @@ class SchedulerCfg(object):
         self.log_file = self.cfg['log-filename']
         self.redis_name = self.cfg['redis-name']
         self.trigger_type = self.cfg['trigger-type']
+        self.timezone = self.cfg['timezone']

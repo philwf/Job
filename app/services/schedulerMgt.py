@@ -155,6 +155,7 @@ class SchedulerMgt(object):
 
         cron_str = job['cron']
         cron_dict = CronFiled(cron_str).cron
+        cron_dict["timezone"] = self.scheduler_cfg.timezone
 
         func_name = job['func']
         func = function_map.get(func_name)
